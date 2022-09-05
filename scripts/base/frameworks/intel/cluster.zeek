@@ -22,18 +22,54 @@ redef have_full_data = F;
 @endif
 
 @if ( Cluster::local_node_type() == Cluster::MANAGER )
+# Number of files that haven't been read completely
+global read_files_init: set[string];
+
+event initial_distribution()
+	{
+	if ( |read_files_init| > 0 )
+		{
+		Reporter::warning(fmt("Intel files not read after N secs: %s", read_files_init));
+		read_files_init = set();
+		}
+
+	for ( name in Cluster::nodes )
+		{
+		if ( Cluster::nodes[name]$node_type != Cluster::WORKER )
+			next;
+
+		Broker::publish_id(Cluster::node_topic(name), "Intel::min_data_store");
+		}
+	}
+
 event zeek_init()
 	{
+	read_files_init = read_files;
+	#TODO: Make threshold configurable
+	schedule 2secs { initial_distribution() };
 	Broker::auto_publish(Cluster::worker_topic, remove_indicator);
+	}
+
+event Input::end_of_data(name: string, source: string)
+	{
+	#FIXME: Consider path prefix
+	if ( name[:6] == "intel-" && source in read_files_init )
+		{
+		delete read_files_init[source];
+
+		if ( |read_files_init| == 0 )
+			event initial_distribution();
+		}
 	}
 
 # Handling of new worker nodes.
 event Cluster::node_up(name: string, id: string)
 	{
 	# When a worker connects, send it the complete minimal data store unless
-	# we turned off that feature. The store will be kept up to date after
-	# this by the insert_indicator event.
-	if ( send_store_on_node_up && name in Cluster::nodes && Cluster::nodes[name]$node_type == Cluster::WORKER )
+	# we turned off that feature or there are still files to read. The store
+	# will be kept up to date after this by the insert_indicator event.
+	if ( send_store_on_node_up && |read_files_init| == 0 &&
+		name in Cluster::nodes && Cluster::nodes[name]$node_type == Cluster::WORKER )
 		{
 		Broker::publish_id(Cluster::node_topic(name), "Intel::min_data_store");
 		}
@@ -43,6 +79,11 @@ event Cluster::node_up(name: string, id: string)
 # has to be distributed.
 event Intel::new_item(item: Item) &priority=5
 	{
+	if ( |read_files_init| > 0 )
+		# Don't queue individual updates if we're still reading files
+		# to initialize the minimal data store.
+		return;
+
 	local pt = Cluster::rr_topic(Cluster::proxy_pool, "intel_insert_rr_key");
 
 	if ( pt == "" )
