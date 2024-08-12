@@ -229,11 +229,11 @@ bool Manager::PermitUnknownProtocol(const std::string& analyzer, uint32_t protoc
 }
 
 zeek::VectorValPtr Manager::BuildAnalyzerHistory() const {
-    auto history = zeek::make_intrusive<zeek::VectorVal>(zeek::id::string_vec);
+    auto history = zeek::make_intrusive<zeek::VectorVal>(zeek::id::tag_vec);
 
     for ( unsigned int i = 0; i < analyzer_stack.size(); i++ ) {
-        auto analyzer_name = analyzer_stack[i]->GetAnalyzerName();
-        history->Assign(i, make_intrusive<StringVal>(analyzer_name));
+        auto analyzer_tag = analyzer_stack[i]->GetAnalyzerTag();
+        history->Assign(i, analyzer_tag.AsVal());
     }
 
     return history;

@@ -890,7 +890,7 @@ event Pcap::file_done%(path: string%);
 ##                   of tunneling.
 ##
 ## .. zeek:see:: UnknownProtocol::first_bytes_count
-event unknown_protocol%(analyzer_name: string, protocol: count, first_bytes: string, analyzer_history: string_vec%);
+event unknown_protocol%(analyzer_name: string, protocol: count, first_bytes: string, analyzer_history: tag_vec%);
 event unknown_protocol%(analyzer_name: string, protocol: count, first_bytes: string%) &deprecated="Remove in v8.1. Use the version that includes analyzer_history.";
 
 ## An event for handling packets that reached the end of processing without

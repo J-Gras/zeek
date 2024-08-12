@@ -89,6 +89,13 @@ type any_vec: vector of any;
 ##    directly and then remove this alias.
 type string_vec: vector of string;
 
+## A vector of analyzer tags.
+##
+## .. todo:: We need this type definition only for declaring builtin functions
+##    via ``bifcl``. We should extend ``bifcl`` to understand composite types
+##    directly and then remove this alias.
+type tag_vec: vector of AllAnalyzers::Tag;
+
 ## A vector of x509 opaques.
 ##
 ## .. todo:: We need this type definition only for declaring builtin functions

@@ -207,10 +207,10 @@ private:
     AnalyzerPtr InstantiateAnalyzer(const std::string& name);
 
     /**
-     * Generates a string vector that represents the analyzer history of the
-     * current packet based on the analyzers' tags.
+     * Generates a vector that represents the analyzer history of the current
+     * packet based on the analyzers' tags.
      *
-     * @return A vector of strings representing the packet analyzer history.
+     * @return A vector of analyzer tags representing the packet analyzer history.
      */
     VectorValPtr BuildAnalyzerHistory() const;
 

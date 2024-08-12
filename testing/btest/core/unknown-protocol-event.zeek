@@ -2,7 +2,7 @@
 # @TEST-EXEC: btest-diff out
 
 event unknown_protocol(analyzer_name: string, protocol: count, first_bytes: string,
-	analyzer_history: string_vec)
+	analyzer_history: tag_vec)
 	{
 	print analyzer_name, protocol, bytestring_to_hexstr(first_bytes),
 		analyzer_history;

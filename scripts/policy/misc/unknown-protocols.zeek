@@ -34,14 +34,15 @@ export {
 }
 
 event unknown_protocol(analyzer_name: string, protocol: count, first_bytes: string,
-	analyzer_history: string_vec)
+	analyzer_history: tag_vec)
 	{
 	local info : Info;
 	info$ts = network_time();
 	info$analyzer = analyzer_name;
 	info$protocol_id = fmt("0x%x", protocol);
 	info$first_bytes = bytestring_to_hexstr(first_bytes);
-	info$analyzer_history = analyzer_history;
+	for ( _, tag in analyzer_history )
+		info$analyzer_history += Analyzer::name(tag);
 
 	Log::write(LOG, info);
 	}

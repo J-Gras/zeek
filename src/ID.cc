@@ -35,6 +35,7 @@ TableTypePtr id::string_array;
 TableTypePtr id::count_set;
 VectorTypePtr id::string_vec;
 VectorTypePtr id::index_vec;
+VectorTypePtr id::tag_vec;
 
 const detail::IDPtr& id::find(std::string_view name) { return zeek::detail::global_scope()->Find(name); }
 
@@ -92,6 +93,7 @@ void id::detail::init_types() {
     count_set = id::find_type<TableType>("count_set");
     string_vec = id::find_type<VectorType>("string_vec");
     index_vec = id::find_type<VectorType>("index_vec");
+    tag_vec = id::find_type<VectorType>("tag_vec");
 }
 
 namespace detail {

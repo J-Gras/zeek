@@ -265,6 +265,7 @@ extern TableTypePtr string_array;
 extern TableTypePtr count_set;
 extern VectorTypePtr string_vec;
 extern VectorTypePtr index_vec;
+extern VectorTypePtr tag_vec;
 
 namespace detail {
 
