@@ -272,11 +272,13 @@ void MsgThread::OnWaitForStop() {
                 fprintf(stderr, "received signal while waiting for thread %s, aborting all ...\n", Name());
                 thread_mgr->KillThreads();
             }
-            else {
+            else if ( signal_count > 10 ) {
                 // More than one signal. Abort processing
                 // right away. on another one.
                 fprintf(stderr, "received another signal while waiting for thread %s, aborting processing\n", Name());
                 exit(1);
+            } else {
+                fprintf(stderr, "received signal while waiting for thread %s, do nothing ...\n", Name());
             }
 
             signal_val = 0;

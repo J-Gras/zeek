@@ -48,7 +48,7 @@ extern "C" {
 #ifdef DEBUG
 #define DBG_STEM(...) stem->LogDebug(__VA_ARGS__);
 #else
-#define DBG_STEM(...)
+#define DBG_STEM(...) stem->LogDebug(__VA_ARGS__);
 #endif
 // NOLINTEND(cppcoreguidelines-macro-usage)
 
@@ -613,6 +613,7 @@ size_t Supervisor::ProcessMessages() {
 
     for ( auto& msg : msgs ) {
         DBG_LOG(DBG_SUPERVISOR, "read msg from Stem: %s", msg.data());
+        fprintf(stderr, "read msg from Stem: %s\n", msg.data());
         std::vector<std::string> msg_tokens;
         util::tokenize_string(msg, " ", &msg_tokens);
         const auto& type = msg_tokens[0];
